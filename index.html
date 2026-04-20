@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X Algorithm Dashboard — 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #181818;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0ede8;
+  --text2: #888580;
+  --text3: #555250;
+  --accent: #1d9bf0;
+  --accent2: #00ba7c;
+  --red: #f4212e;
+  --amber: #ffd700;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Noto Sans JP', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* HEADER */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--text);
+}
+
+.logo span { color: var(--accent); }
+
+.header-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  color: var(--text2);
+  letter-spacing: .06em;
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--accent2);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.status-text {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text2);
+  letter-spacing: .05em;
+}
+
+/* LAYOUT */
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  min-height: calc(100vh - 57px);
+}
+
+/* SIDEBAR */
+nav {
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  position: sticky;
+  top: 57px;
+  height: calc(100vh - 57px);
+  overflow-y: auto;
+}
+
+.nav-section {
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+
+.nav-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 12px;
+  transition: all .15s;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  background: var(--bg3);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.nav-item.active {
+  background: rgba(29,155,240,0.1);
+  color: var(--accent);
+  border-color: rgba(29,155,240,0.2);
+}
+
+.nav-icon { font-size: 13px; width: 16px; text-align: center; }
+
+/* MAIN */
+main {
+  padding: 32px;
+  max-width: 900px;
+}
+
+.panel { display: none; }
+.panel.active {
+  display: block;
+  animation: fadeIn .2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* SECTION HEADER */
+.section-head {
+  margin-bottom: 28px;
+}
+
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  margin-bottom: 6px;
+}
+
+.section-sub {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* CARDS */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 14px;
+  transition: border-color .15s;
+}
+
+.card:hover { border-color: var(--border2); }
+
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title .icon { font-size: 14px; }
+
+/* GRID */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 600px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .layout { grid-template-columns: 1fr; }
+  nav { display: none; }
+  main { padding: 20px 16px; }
+}
+
+/* FLOW STEPS */
+.flow { display: flex; flex-direction: column; gap: 2px; }
+
+.flow-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 0;
+  position: relative;
+}
+
+.flow-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 44px;
+  width: 1px;
+  height: calc(100% - 28px);
+  background: var(--border2);
+}
+
+.flow-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.n-blue { background: rgba(29,155,240,0.15); color: var(--accent); border: 1px solid rgba(29,155,240,0.3); }
+.n-green { background: rgba(0,186,124,0.15); color: var(--accent2); border: 1px solid rgba(0,186,124,0.3); }
+.n-amber { background: rgba(255,215,0,0.12); color: var(--amber); border: 1px solid rgba(255,215,0,0.25); }
+.n-red { background: rgba(244,33,46,0.12); color: var(--red); border: 1px solid rgba(244,33,46,0.25); }
+.n-gray { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); }
+
+.flow-body { flex: 1; padding-top: 4px; }
+.flow-name { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.flow-desc { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin: 2px 2px 0 0;
+  letter-spacing: .03em;
+}
+.badge-green { background: rgba(0,186,124,0.15); color: var(--accent2); border: 1px solid rgba(0,186,124,0.25); }
+.badge-red { background: rgba(244,33,46,0.12); color: #ff6b7a; border: 1px solid rgba(244,33,46,0.25); }
+.badge-blue { background: rgba(29,155,240,0.12); color: var(--accent); border: 1px solid rgba(29,155,240,0.25); }
+.badge-amber { background: rgba(255,215,0,0.1); color: var(--amber); border: 1px solid rgba(255,215,0,0.2); }
+.badge-gray { background: var(--bg3); color: var(--text2); border: 1px solid var(--border2); }
+
+/* BAR CHARTS */
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+}
+
+.bar-label {
+  font-size: 11px;
+  min-width: 130px;
+  color: var(--text2);
+}
+
+.bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+.bar-pos { background: linear-gradient(90deg, #00ba7c, #00d48a); }
+.bar-neg { background: linear-gradient(90deg, #f4212e, #ff6b7a); }
+
+.bar-val {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 56px;
+  text-align: right;
+  color: var(--text);
+}
+
+/* COMPARISON TABLE */
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.cmp-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: .05em;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border2);
+  text-transform: uppercase;
+}
+
+.cmp-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  line-height: 1.5;
+}
+
+.cmp-table tr:last-child td { border-bottom: none; }
+.cmp-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.col-free { color: var(--text2); }
+.col-premium { font-weight: 500; }
+.col-key { font-weight: 500; font-size: 12px; }
+
+/* WARN BOXES */
+.warn {
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.65;
+  margin-bottom: 14px;
+  border-left: 3px solid;
+}
+.warn-red { background: rgba(244,33,46,0.06); border-color: var(--red); color: #ff8a93; }
+.warn-amber { background: rgba(255,215,0,0.06); border-color: var(--amber); color: #ffe566; }
+.warn-green { background: rgba(0,186,124,0.06); border-color: var(--accent2); color: #4de8b0; }
+.warn-blue { background: rgba(29,155,240,0.06); border-color: var(--accent); color: #6ec6ff; }
+
+/* FORMULA */
+.formula {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin: 12px 0;
+  letter-spacing: .02em;
+  overflow-x: auto;
+}
+
+/* TIPS LIST */
+.tips-list {
+  list-style: none;
+  padding: 0;
+}
+.tips-list li {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text2);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.tips-list li:last-child { border-bottom: none; }
+.tip-marker { flex-shrink: 0; margin-top: 1px; }
+
+/* STAT BOXES */
+.stat-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.stat-box {
+  flex: 1;
+  min-width: 100px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+.stat-num {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.stat-label { font-size: 11px; color: var(--text2); }
+
+/* MOBILE NAV */
+.mobile-tabs {
+  display: none;
+  overflow-x: auto;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 600px) {
+  .mobile-tabs { display: flex; }
+  .layout { display: block; }
+}
+
+.mobile-tab {
+  white-space: nowrap;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  color: var(--text2);
+  background: transparent;
+  transition: all .15s;
+  font-family: var(--sans);
+}
+
+.mobile-tab.active {
+  background: rgba(29,155,240,0.15);
+  color: var(--accent);
+  border-color: rgba(29,155,240,0.3);
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+.inline-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--accent);
+}
+
+/* Source link */
+.source-link {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.source-link a { color: var(--accent); text-decoration: none; }
+.source-link a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">X.<span>ALGO</span></div>
+  <div class="header-tag">2026 / xai-org</div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <div class="status-text">LIVE SOURCE</div>
+  </div>
+</header>
+
+<!-- Mobile tabs -->
+<div class="mobile-tabs">
+  <button class="mobile-tab active" onclick="show('overview')">全体像</button>
+  <button class="mobile-tab" onclick="show('plus')">加算</button>
+  <button class="mobile-tab" onclick="show('minus')">減算</button>
+  <button class="mobile-tab" onclick="show('premium')">Premium</button>
+  <button class="mobile-tab" onclick="show('shadowban')">シャドウバン</button>
+  <button class="mobile-tab" onclick="show('newaccount')">新アカウント</button>
+  <button class="mobile-tab" onclick="show('hashtag')">ハッシュタグ</button>
+  <button class="mobile-tab" onclick="show('links')">リンク</button>
+  <button class="mobile-tab" onclick="show('pr')">宣伝・PR</button>
+</div>
+
+<div class="layout">
+  <nav>
+    <div class="nav-section">
+      <div class="nav-label">アーキテクチャ</div>
+      <a class="nav-item active" onclick="show('overview')">
+        <span class="nav-icon">📊</span> 全体像
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">スコアリング</div>
+      <a class="nav-item" onclick="show('plus')">
+        <span class="nav-icon">📈</span> 加算アルゴ
+      </a>
+      <a class="nav-item" onclick="show('minus')">
+        <span class="nav-icon">📉</span> 減算アルゴ
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">アカウント</div>
+      <a class="nav-item" onclick="show('premium')">
+        <span class="nav-icon">⭐</span> Premium比較
+      </a>
+      <a class="nav-item" onclick="show('shadowban')">
+        <span class="nav-icon">👻</span> シャドウバン
+      </a>
+      <a class="nav-item" onclick="show('newaccount')">
+        <span class="nav-icon">🆕</span> 新アカウント
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">コンテンツ</div>
+      <a class="nav-item" onclick="show('hashtag')">
+        <span class="nav-icon">#</span> ハッシュタグ
+      </a>
+      <a class="nav-item" onclick="show('links')">
+        <span class="nav-icon">🔗</span> リンク
+      </a>
+      <a class="nav-item" onclick="show('pr')">
+        <span class="nav-icon">📣</span> 宣伝・PR
+      </a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ===== OVERVIEW ===== -->
+    <div id="panel-overview" class="panel active">
+      <div class="section-head">
+        <div class="section-eyebrow">Architecture</div>
+        <div class="section-title">アルゴリズム全体像</div>
+        <div class="section-sub">xai-org/x-algorithm（2026年1月公開）— Rust 62.9% / Python 37.1%</div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num" style="color:var(--accent)">5億</div>
+          <div class="stat-label">1日の投稿数</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:var(--accent2)">1,500</div>
+          <div class="stat-label">1ユーザーの候補数</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:var(--amber)">50億</div>
+          <div class="stat-label">1日のランキング判定</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:#ff6b7a">&lt;200ms</div>
+          <div class="stat-label">処理時間</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⚡</span> パイプライン（7ステージ）</div>
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-num n-blue">1</div>
+            <div class="flow-body">
+              <div class="flow-name">候補ソーシング</div>
+              <div class="flow-desc">Thunder（フォロー中・In-network 50%）＋ Phoenix Two-Tower（未フォロー・OON 50%）から約1,500件に絞り込む</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n-blue">2</div>
+            <div class="flow-body">
+              <div class="flow-name">クエリ水和（Query Hydration）</div>
+              <div class="flow-desc">ユーザーのエンゲージメント履歴・フォローリストなどのコンテキストを取得</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n-amber">3</div>
+            <div class="flow-body">
+              <div class="flow-name">プレスコアリング フィルター</div>
+              <div class="flow-desc">重複・古い投稿・自己投稿・ブロック/ミュート済み・閲覧済みを除去</div>
+              <div style="margin-top:6px">
+                <span class="badge badge-gray">DropDuplicates</span>
+                <span class="badge badge-gray">AgeFilter</span>
+                <span class="badge badge-gray">SelfpostFilter</span>
+                <span class="badge badge-gray">MutedKeyword</span>
+                <span class="badge badge-gray">PreviouslySeen</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n-green">4</div>
+            <div class="flow-body">
+              <div class="flow-name">Phoenix スコアリング（Grokトランスフォーマー）</div>
+              <div class="flow-desc">各アクション確率を予測 → 重み付きスコアを計算</div>
+              <div class="formula">Final Score = Σ (weight_i × P(action_i))</div>
+              <div style="margin-top:4px">
+                <span class="badge badge-green">+like</span>
+                <span class="badge badge-green">+reply</span>
+                <span class="badge badge-green">+repost</span>
+                <span class="badge badge-green">+share</span>
+                <span class="badge badge-green">+dwell</span>
+                <span class="badge badge-green">+follow</span>
+                <span class="badge badge-red">−block</span>
+                <span class="badge badge-red">−mute</span>
+                <span class="badge badge-red">−report</span>
+                <span class="badge badge-red">−not_interested</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n-amber">5</div>
+            <div class="flow-body">
+              <div class="flow-name">多様性スコアラー ＋ OON調整</div>
+              <div class="flow-desc">同一著者の連続表示を減衰。未フォローコンテンツにOON_WEIGHT_FACTORを乗算</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n-green">6</div>
+            <div class="flow-body">
+              <div class="flow-name">選別（Top-K）</div>
+              <div class="flow-desc">スコア順にソートし上位K件を選択</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num n-red">7</div>
+            <div class="flow-body">
+              <div class="flow-name">ポスト選別フィルター</div>
+              <div class="flow-desc">削除済み・スパム・暴力/グロコンテンツの最終チェック（VFFilter）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🎯</span> TweepCred — アカウント信頼スコア</div>
+        <div class="warn warn-amber">スコア0〜100。<strong>閾値65が重要</strong>：65未満では配信対象ツイートが最大3件に制限。</div>
+        <div class="flow-desc">PageRankベースの重み付きスコア。アカウント年齢・フォロワー比・エンゲージ質・高品質ユーザーとの交流が加点要素。Premiumで+4〜+16pt加算。</div>
+      </div>
+
+      <div class="source-link">
+        Source: <a href="https://github.com/xai-org/x-algorithm" target="_blank">github.com/xai-org/x-algorithm</a> — January 2026 release
+      </div>
+    </div>
+
+    <!-- ===== PLUS ===== -->
+    <div id="panel-plus" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Positive Signals</div>
+        <div class="section-title">加算アルゴリズム</div>
+        <div class="section-sub">スコアを上げるアクションのランキングと、信頼スコアを向上させる行動</div>
+      </div>
+
+      <div class="warn warn-blue">会話の深さが最重要。著者が返信を返した返信は、いいねの<strong>150倍</strong>の重みを持つ。</div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> エンゲージメント重みランキング（正）</div>
+
+        <div class="bar-row">
+          <div class="bar-label">著者返信つき返信</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:100%"></div></div>
+          <div class="bar-val" style="color:var(--accent2)">× 150</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">引用ポスト（Quote）</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:67%"></div></div>
+          <div class="bar-val">× 25</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">リポスト（Repost）</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:63%"></div></div>
+          <div class="bar-val">× 20</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">プロフィールクリック</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:48%"></div></div>
+          <div class="bar-val">× 12</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">返信（Reply）</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:45%"></div></div>
+          <div class="bar-val">× 13.5</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">リンククリック</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:43%"></div></div>
+          <div class="bar-val">× 11</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">ブックマーク</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:40%"></div></div>
+          <div class="bar-val">× 10</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">滞在時間（Dwell）</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:20%"></div></div>
+          <div class="bar-val">中程度</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">いいね（Like）</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:8%"></div></div>
+          <div class="bar-val">× 1（基準）</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">🚀</span> エンゲージメント速度</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker">⏱</span>投稿後30〜60分が最重要ウィンドウ</li>
+            <li><span class="tip-marker">💬</span>最初の15分で10返信 → 広配信トリガー</li>
+            <li><span class="tip-marker">📅</span>火〜木の朝が最高パフォーマンス帯</li>
+            <li><span class="tip-marker">🔄</span>1時間以内に著者が返信を返す効果大</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📈</span> TweepCred向上アクション</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker">✓</span>高TweepCredユーザーとの交流</li>
+            <li><span class="tip-marker">✓</span>フォロワー/フォロー比の健全化</li>
+            <li><span class="tip-marker">✓</span>継続的な一定ペース投稿</li>
+            <li><span class="tip-marker">✓</span>ネイティブ動画・長文でdwell増加</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">💡</span> 加点戦略のポイント</div>
+        <div class="formula">Score = Likes×1 + Retweets×20 + Replies×13.5 + Profile_Clicks×12 + Link_Clicks×11 + Bookmarks×10</div>
+        <div class="flow-desc" style="font-size:12px;color:var(--text2)">「いいねとRT」戦略は非効率。会話を生む内容が最も効果的。ブックマークは「後で読みたい」という高意図シグナルとして重視される。</div>
+      </div>
+    </div>
+
+    <!-- ===== MINUS ===== -->
+    <div id="panel-minus" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Negative Signals</div>
+        <div class="section-title">減算アルゴリズム</div>
+        <div class="section-sub">スコアを下げるアクションと、信頼スコアを低下させる行動</div>
+      </div>
+
+      <div class="warn warn-red">ネガティブ信号は非常に強力。ブロック1件 = いいね数十件分を打ち消す（重み −74 相当）。</div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📉</span> ネガティブシグナル 重みランキング</div>
+
+        <div class="bar-row">
+          <div class="bar-label">報告（Report）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:100%"></div></div>
+          <div class="bar-val" style="color:var(--red)">最大級</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">ブロック（Block）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:95%"></div></div>
+          <div class="bar-val" style="color:var(--red)">− 74〜3</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">ミュート（Mute）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:80%"></div></div>
+          <div class="bar-val">強ペナ</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">興味なし（Not interested）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:60%"></div></div>
+          <div class="bar-val">中〜強</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">外部リンク（非Premium）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:52%"></div></div>
+          <div class="bar-val">−30〜50%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">3個以上ハッシュタグ</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:40%"></div></div>
+          <div class="bar-val">− 40%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">エンゲ誘導スパム文</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:32%"></div></div>
+          <div class="bar-val">検出・抑制</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">短時間大量投稿</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:25%"></div></div>
+          <div class="bar-val">スパム判定</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">⚠️</span> TweepCred低下アクション</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>大量フォロー→アンフォローの繰り返し</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>Block/Mute/Reportを多数受ける</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>自動ツール（Bot系）の使用</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>同一内容の繰り返し投稿</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🚫</span> コンテンツペナルティ</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>スパムURL・アフィリエイトの多用</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>エンゲなし投稿の連続</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>無関係トレンドタグへの便乗</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>「いいねしてRT」等の誘導文</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PREMIUM ===== -->
+    <div id="panel-premium" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Subscription Tier</div>
+        <div class="section-title">Premium vs. 無料</div>
+        <div class="section-sub">アルゴリズム上の差異と実際のリーチへの影響</div>
+      </div>
+
+      <div class="warn warn-amber">Premiumはリーチを増幅させるが、低品質コンテンツの代替にはならない。良いコンテンツをより遠くへ届ける「増幅器」として機能する。</div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⚖️</span> 機能・リーチ比較</div>
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>無料</th>
+              <th>Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-key">フォロワーへの表示（In-network）</td>
+              <td class="col-free">基準</td>
+              <td class="col-premium"><span class="badge badge-green">約 4倍</span></td>
+            </tr>
+            <tr>
+              <td class="col-key">非フォロワーへの表示（OON）</td>
+              <td class="col-free">基準</td>
+              <td class="col-premium"><span class="badge badge-green">約 2倍</span></td>
+            </tr>
+            <tr>
+              <td class="col-key">外部リンクのペナルティ</td>
+              <td class="col-free"><span class="badge badge-red">−30〜50%</span></td>
+              <td class="col-premium"><span class="badge badge-green">ペナルティなし</span></td>
+            </tr>
+            <tr>
+              <td class="col-key">TweepCred ボーナス</td>
+              <td class="col-free">なし</td>
+              <td class="col-premium"><span class="badge badge-blue">+4〜+16 pt</span></td>
+            </tr>
+            <tr>
+              <td class="col-key">返信の表示優先度</td>
+              <td class="col-free">通常</td>
+              <td class="col-premium"><span class="badge badge-blue">スレッド内で上位</span></td>
+            </tr>
+            <tr>
+              <td class="col-key">同等リーチに必要な有機エンゲ</td>
+              <td class="col-free">4〜8倍必要</td>
+              <td class="col-premium">基準</td>
+            </tr>
+            <tr>
+              <td class="col-key">投稿文字数</td>
+              <td class="col-free">280文字</td>
+              <td class="col-premium"><span class="badge badge-blue">25,000文字</span></td>
+            </tr>
+            <tr>
+              <td class="col-key">広告収益シェア</td>
+              <td class="col-free">なし</td>
+              <td class="col-premium">あり（条件達成で）</td>
+            </tr>
+            <tr>
+              <td class="col-key">投稿編集機能</td>
+              <td class="col-free">なし</td>
+              <td class="col-premium"><span class="badge badge-green">あり</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">💬</span> 実用的判断</div>
+        <ul class="tips-list">
+          <li><span class="tip-marker">→</span>リンクを頻繁に貼るなら、Premiumは実質必須（無料はFeed表示がほぼゼロ）</li>
+          <li><span class="tip-marker">→</span>テキスト中心で会話重視なら、無料でも十分伸ばせる</li>
+          <li><span class="tip-marker">→</span>ブランド・クリエイターでX成長を重視するなら費用対効果は高い</li>
+          <li><span class="tip-marker">→</span>無料でもコンテンツ品質が高ければPremiumの平均を超えられる</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== SHADOWBAN ===== -->
+    <div id="panel-shadowban" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Reach Restriction</div>
+        <div class="section-title">シャドウバン</div>
+        <div class="section-sub">原因・検出・解除方法</div>
+      </div>
+
+      <div class="warn warn-amber">Xはシャドウバンを公式に認めていないが、実質的なリーチ制限として広く観測されている。</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">🚨</span> 主な原因</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--red)">!</span>自動ツール（自動いいね・フォロー・返信）</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>短時間での大量フォロー/アンフォロー</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>過剰ハッシュタグの全投稿への使用</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>スパムURL・アフィリエイトの反復</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>同一コンテンツの連続リポスト</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>大量のブロック/報告を受ける</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>センシティブフラグの多発</li>
+            <li><span class="tip-marker" style="color:var(--red)">!</span>新アカウントでの急激な大量活動</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">🔍</span> 検出方法</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker">→</span>別アカウントで自分の投稿を検索</li>
+            <li><span class="tip-marker">→</span>最新タブに表示されるか確認</li>
+            <li><span class="tip-marker">→</span>サードパーティ製シャドウバン確認ツールを使用</li>
+            <li><span class="tip-marker">→</span>通常時より急激なインプレッション低下</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="card-title" style="font-size:12px"><span class="icon">✅</span> 解除手順</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--accent2)">1</span>24〜72時間、すべての活動を停止</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">2</span>スパムURL・過剰ハッシュタグ投稿を削除</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">3</span>フォロー/いいねを1時間5件以下に制限</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">4</span>自動ツールを完全停止</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">5</span>フォロワーへの返信中心に行動を戻す</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NEW ACCOUNT ===== -->
+    <div id="panel-newaccount" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Account Bootstrap</div>
+        <div class="section-title">新アカウントの定義と戦略</div>
+        <div class="section-sub">TweepCredが低い段階での正しい立ち上げ方</div>
+      </div>
+
+      <div class="warn warn-blue">明確な「新アカウント日数」の定義は非公開。TweepCred 65未満の状態が実質「新アカウント」扱いとなる。</div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📋</span> 新アカウントの特徴</div>
+        <ul class="tips-list">
+          <li><span class="tip-marker">→</span>作成直後はTweepCredが最低ランクで配信が極めて限定的</li>
+          <li><span class="tip-marker">→</span>TweepCred 65未満 → 配信対象ツイートが最大3件に制限</li>
+          <li><span class="tip-marker">→</span>急激な大量アクティビティは即シャドウバン・スパム判定リスク</li>
+          <li><span class="tip-marker">→</span>アカウント年齢はTweepCred加点要素 → 時間をかけることが有利</li>
+          <li><span class="tip-marker">→</span>小アカウント向けのブースト施策が存在：良コンテンツはFor Youに表示されうる</li>
+        </ul>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">✅</span> 最初にすべきこと</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>プロフィール・アイコンを完成させる</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>1日2〜3件から自然なペースで投稿</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>少数の高品質アカウントをフォロー</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>高TweepCredユーザーの投稿にリプライ</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">❌</span> 最初にやってはいけないこと</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>一気に大量フォロー</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>自動ツールの使用</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>1時間に何十件もの投稿・いいね</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>フォロー→アンフォローの繰り返し</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== HASHTAG ===== -->
+    <div id="panel-hashtag" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Content Signal</div>
+        <div class="section-title">ハッシュタグの影響</div>
+        <div class="section-sub">少ない方が良い — 使いすぎはスパム信号になる</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> 個数別インパクト</div>
+        <div class="bar-row">
+          <div class="bar-label">0個</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:80%"></div></div>
+          <div class="bar-val" style="color:var(--accent2)">問題なし</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">1〜2個（関連性高）</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:100%"></div></div>
+          <div class="bar-val" style="color:var(--accent2)">+ 最大21%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">3個以上</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:60%"></div></div>
+          <div class="bar-val" style="color:var(--red)">− 40%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">5個以上</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:90%"></div></div>
+          <div class="bar-val" style="color:var(--red)">スパム判定</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title"><span class="icon">✅</span> 推奨される使い方</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>ニッチに直結した1〜2個のみ</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>0個でも全く問題なし</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>投稿内容と直接関連するもの</li>
+            <li><span class="tip-marker" style="color:var(--accent2)">✓</span>コミュニティ・ニッチ特化タグ</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">❌</span> 避けるべき使い方</div>
+          <ul class="tips-list">
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>3個以上のハッシュタグ</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>関係のないトレンドへの便乗</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>全投稿に同じタグを貼り続ける</li>
+            <li><span class="tip-marker" style="color:var(--red)">✗</span>人気急上昇タグへの無関係便乗</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="warn warn-green">結論：ハッシュタグはゼロでも構わない。使うなら投稿に直結するニッチタグを1個だけ。</div>
+    </div>
+
+    <!-- ===== LINKS ===== -->
+    <div id="panel-links" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">External Links</div>
+        <div class="section-title">リンクの影響と回避策</div>
+        <div class="section-sub">Xはユーザーをプラットフォーム内に留めたい — 外部リンクはアルゴリズムが最も嫌うシグナル</div>
+      </div>
+
+      <div class="warn warn-red">2025年3月以降、<strong>無料アカウントのリンク投稿はFeedエンゲージメント中央値がほぼゼロ</strong>。実質的にFeedに表示されない。</div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📉</span> アカウント種別 × リンク有無の影響</div>
+        <div class="bar-row">
+          <div class="bar-label">無料 + リンクなし</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:80%"></div></div>
+          <div class="bar-val" style="color:var(--accent2)">通常配信</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">無料 + 外部リンク</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:100%"></div></div>
+          <div class="bar-val" style="color:var(--red)">エンゲほぼ0</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Premium + リンクなし</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:100%"></div></div>
+          <div class="bar-val" style="color:var(--accent2)">最大リーチ</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Premium + 外部リンク</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:50%"></div></div>
+          <div class="bar-val" style="color:var(--amber)">軽減されるが減少</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">💡</span> 回避策（重要度順）</div>
+        <ul class="tips-list">
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">1位</span>
+            <div>
+              <strong>本文にリンクを入れず、ツリー（リプライ）の1件目に貼る</strong><br>
+              <span style="color:var(--text2)">← 最も効果的。本文はテキスト/画像のみにして「詳細はリプライ欄へ↓」と誘導</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">2位</span>
+            <div>
+              <strong>X Article機能（ネイティブ長文記事）を使う</strong><br>
+              <span style="color:var(--text2)">プラットフォーム内コンテンツとして認識 → ペナルティなし</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">3位</span>
+            <div>
+              <strong>動画はYouTubeリンクではなくネイティブアップロード</strong><br>
+              <span style="color:var(--text2)">Xは「動画ファースト」を推進中。ネイティブ動画は優遇される</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">4位</span>
+            <div>
+              <strong>「Link in Bio」戦略</strong><br>
+              <span style="color:var(--text2)">プロフィールにリンクをまとめ、投稿では「プロフィールのリンクから」と誘導</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">5位</span>
+            <div>
+              <strong>Premiumに加入してリンクペナルティを軽減</strong><br>
+              <span style="color:var(--text2)">頻繁にリンクを貼る用途なら最もコスパが良い</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="warn warn-green">まとめ：本文にリンクを入れない → ツリーの1件目に貼る。これが現状の最善策。</div>
+
+      <div class="source-link">
+        Source: <a href="https://github.com/xai-org/x-algorithm" target="_blank">github.com/xai-org/x-algorithm</a> — 2026 analysis
+      </div>
+    </div>
+
+    <!-- ===== PR ===== -->
+    <div id="panel-pr" class="panel">
+      <div class="section-head">
+        <div class="section-eyebrow">Promotional Content</div>
+        <div class="section-title">宣伝・PR表記の影響</div>
+        <div class="section-sub">本文に「PR」「広告」「宣伝」と書いた場合のアルゴリズム上の扱いと回避策</div>
+      </div>
+
+      <div class="warn warn-amber">結論から言うと：<strong>PR表記はアルゴリズム上、直接のペナルティシグナルではない</strong>が、間接的に大きく不利になる複数の要因がある。</div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🔍</span> アルゴリズムはPR投稿をどう扱うか</div>
+        <ul class="tips-list">
+          <li>
+            <span class="tip-marker">→</span>
+            <div>
+              <strong>Grokのセンチメント分析が「販促コンテンツ」と判定する</strong><br>
+              <span style="color:var(--text2)">2025年以降、Grokは投稿のトーンを分析。「PR」「広告」「案件」などの表記は宣伝的トーンと判定され、配信が抑制される傾向がある</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker">→</span>
+            <div>
+              <strong>外部リンクとの組み合わせで二重ペナルティ</strong><br>
+              <span style="color:var(--text2)">PR投稿はほぼ必ず外部リンクを含む → リンクペナルティ（−30〜50%）と宣伝判定が重なり、実質的にFeedへの表示がほぼゼロになりうる</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker">→</span>
+            <div>
+              <strong>ユーザーの「興味なし」「ミュート」率が上がる</strong><br>
+              <span style="color:var(--text2)">PR投稿はエンゲージより「興味なし」クリックを誘発しやすい。ネガティブシグナル（−74相当）が蓄積すると著者全体のスコアが下がる</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker">→</span>
+            <div>
+              <strong>エンゲージメント速度が遅い → 早期スコアが低い</strong><br>
+              <span style="color:var(--text2)">宣伝投稿は返信・RTが少なく「速度スコア」が低くなりがち。30〜60分ウィンドウで低スコアを取ると広配信されない</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> パターン別 影響度</div>
+        <div class="bar-row">
+          <div class="bar-label">PR＋外部リンク（無料）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:100%"></div></div>
+          <div class="bar-val" style="color:var(--red)">最悪レベル</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">PR＋外部リンク（Premium）</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:65%"></div></div>
+          <div class="bar-val" style="color:var(--red)">大幅減</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">PR＋リンクなし・画像のみ</div>
+          <div class="bar-track"><div class="bar-fill bar-neg" style="width:35%"></div></div>
+          <div class="bar-val" style="color:var(--amber)">中程度の減少</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">PR表記なし・会話型で紹介</div>
+          <div class="bar-track"><div class="bar-fill bar-pos" style="width:75%"></div></div>
+          <div class="bar-val" style="color:var(--accent2)">通常に近い</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">💡</span> 回避策（重要度順）</div>
+        <ul class="tips-list">
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">1位</span>
+            <div>
+              <strong>本文でPR表記せず、ツリー（リプライ）1件目に「※本投稿はPRです」と書く</strong><br>
+              <span style="color:var(--text2)">本文はPR色のない自然な紹介文にし、PR開示はリプライ欄に移す。アルゴリズムは本文を主に評価するためセンチメント判定を回避できる。リンクもここに含める</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">2位</span>
+            <div>
+              <strong>「体験談・感想」として書く → 会話を生む構成にする</strong><br>
+              <span style="color:var(--text2)">「〇〇を使ってみた → 正直な感想は…」形式は返信を誘発しやすい。エンゲージメント速度が上がり、PR色を抑えながらリーチを確保できる</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">3位</span>
+            <div>
+              <strong>外部リンクを本文に入れない（ツリーかプロフィールに集約）</strong><br>
+              <span style="color:var(--text2)">PR投稿最大の敵はリンクペナルティ。「詳細はリプライ欄↓」または「プロフィールのリンクから」に誘導する</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">4位</span>
+            <div>
+              <strong>画像・動画をネイティブで添付してdwell timeを稼ぐ</strong><br>
+              <span style="color:var(--text2)">ビジュアルがあると滞在時間が伸び、ポジティブシグナルが加算される。YouTubeリンクではなくX上に直接アップ</span>
+            </div>
+          </li>
+          <li>
+            <span class="tip-marker" style="color:var(--accent2)">5位</span>
+            <div>
+              <strong>投稿直後に著者自身がリプライで補足情報を追加する</strong><br>
+              <span style="color:var(--text2)">著者リプライは会話シグナルとしてカウントされ速度スコアが上がる。PR開示もここで行えば一石二鳥</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">⚠️</span> 法的・倫理的注意</div>
+        <div class="warn warn-red" style="margin-bottom:0">アルゴリズム回避のためにPR開示を省略することは、景品表示法（ステルスマーケティング規制）に違反する可能性があります。PR開示は必ず行い、開示場所をツリーに移す形で対処してください。</div>
+      </div>
+
+      <div class="source-link">
+        Source: <a href="https://github.com/xai-org/x-algorithm" target="_blank">github.com/xai-org/x-algorithm</a> — 2026 analysis
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function show(id) {
+  // panels
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  // desktop nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  // mobile tabs
+  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  // Scroll to top on mobile
+  if (window.innerWidth <= 600) window.scrollTo(0, 57);
+}
+</script>
+
+</body>
+</html>
